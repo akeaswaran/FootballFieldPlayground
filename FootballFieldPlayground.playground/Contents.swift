@@ -1,6 +1,6 @@
-// FootballFieldPlayground: a playground for testing out building a drive-tracker UIView in Swift
+// FootballFieldPlayground: A Swift playground to test out building a football drive-tracker using UIView and CoreGraphics.
 // Author: Akshay Easwaran <akeaswaran@me.com>
-// Inspiration from https://github.com/criscokid/Canvas-Field/blob/master/field.js
+// Inspired by https://github.com/criscokid/Canvas-Field/blob/master/field.js
   
 import UIKit
 import CoreGraphics
@@ -15,6 +15,7 @@ enum FFTeam: String {
 }
 
 class FootballField : UIView {
+    // setup some private vars
     private var startPoint: CGFloat = 0.0
     private var currentPoint: CGFloat = 0.0
     private var startPlayY: CGFloat = 0.0
@@ -23,13 +24,16 @@ class FootballField : UIView {
     private var awayStartPoint: CGFloat = 660.0
     private var awayCurrentPoint: CGFloat = 660.0
     
+    // these can be modified by the user
     public var homeTeamColor: UIColor = UIColor.blue
     public var awayTeamColor: UIColor = UIColor.red
     
     public var teamWithBall: FFTeam = FFTeam.Home
     
+    // this is the main container of the drive data
     private var driveList: [Dictionary<FFTeam, [Dictionary<String, CGFloat>]>] = []
     
+    // override the two init methods
     override init(frame: CGRect) {
         homeTeamColor = UIColor.init(red:0.72, green:0.07, blue:0.20, alpha:1.00)
         awayTeamColor = UIColor.init(red:0.16, green:0.22, blue:0.38, alpha:1.00)
@@ -44,6 +48,7 @@ class FootballField : UIView {
         backgroundColor = UIColor.init(red: 0, green: 153.0/255.0, blue: 41.0/255.0, alpha: 1.0)
     }
     
+    // Draws the white yard lines on the field
     private func drawYardLine(loc: CGFloat, context: CGContext) {
         context.beginPath()
         context.move(to: CGPoint(x: loc, y: 0))
@@ -52,6 +57,7 @@ class FootballField : UIView {
         context.strokePath()
     }
     
+    // Fills the end zones with the home and away colors
     private func fillEndZones(context: CGContext) {
         context.setFillColor(homeTeamColor.cgColor)
         context.fill(CGRect(x:0, y:0, width: 60, height:300))
@@ -59,6 +65,7 @@ class FootballField : UIView {
         context.fill(CGRect(x:660, y:0, width: 60, height:300))
     }
     
+    // Draws a play bar starting from the current line of scrimmage to the new one after a given value of yards gained/lost
     private func markPlay(context: CGContext, yards: CGFloat, team: FFTeam) {
         if (team == FFTeam.Home) {
             let endPoint: CGFloat = min(currentPoint + yards * 3.0 * 2.0, 660)
@@ -98,6 +105,7 @@ class FootballField : UIView {
         currentPlayY += 12.0
     }
     
+    // Public-facing interface for adding a play to an active drive
     public func addNewPlay(yards: CGFloat, team: FFTeam) {
         let newPlay: Dictionary<String, CGFloat> = [
             "yards" : yards
@@ -109,35 +117,15 @@ class FootballField : UIView {
         driveList[driveList.count - 1] = recentDriveDict
     }
     
+    // Redraws the field using the drive data
     public func updateField() {
         currentPoint = startPoint
         currentPlayY = startPlayY
         awayCurrentPoint = awayStartPoint
         setNeedsDisplay()
     }
-    
-    public func yardsToGo(team: FFTeam) -> CGFloat {
-        if (team == FFTeam.Home) {
-            return (660.0 - currentPoint) / 2.0 / 3.0;
-        } else {
-            return (660.0 - awayCurrentPoint) / 2.0 / 3.0;
-        }
-    }
-    
-    private func drawFirstDownLine(context: CGContext, yardLine: CGFloat) {
-        context.beginPath()
-        context.move(to: CGPoint(x: yardLine * 2.0 * 3.0 + 60.0, y: 0))
-        context.addLine(to: CGPoint(x: yardLine * 2.0 * 3.0 + 60.0, y: 300))
-        context.setStrokeColor(UIColor.yellow.cgColor)
-        context.setLineWidth(2.0)
-        context.strokePath()
-    }
-    
-    public func drawFirstDownLine(yardLine: CGFloat) {
-        let context = UIGraphicsGetCurrentContext()
-        drawFirstDownLine(context: context!, yardLine: yardLine)
-    }
-    
+
+    // Sets the drive's starting yard marker
     private func setStartingPoint(start: CGFloat, team: FFTeam) {
         print(start)
         if (team == FFTeam.Home) {
@@ -149,11 +137,15 @@ class FootballField : UIView {
         }
     }
     
+    // Public facing interface to set the drive's starting yard marker
     public func startNewDrive(start: CGFloat, team: FFTeam) {
         teamWithBall = team
         driveList.append([team: [["start" : start]]])
     }
     
+    // Actually does the drawing of the field.
+    // We need to redraw the field after adding all of our plays/drives, so we kick off a draw in updateField() by calling setNeedsDisplay().
+    // This method draws the yard lines and endzones first, then starts drawing the play bars drive-by-drive.
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         
@@ -180,6 +172,8 @@ class FootballField : UIView {
         }
     }
 }
+
+// Example usage
 
 var field: FootballField = FootballField()
 // drive 1 by home
@@ -230,4 +224,5 @@ field.addNewPlay(yards: 5.0, team: FFTeam.Away)
 field.addNewPlay(yards: -10, team: FFTeam.Away)
 field.addNewPlay(yards: 70, team: FFTeam.Away)
 
+// redraw the field
 field.updateField()
