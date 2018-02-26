@@ -127,7 +127,6 @@ class FootballField : UIView {
 
     // Sets the drive's starting yard marker
     private func setStartingPoint(start: CGFloat, team: FFTeam) {
-        print(start)
         if (team == FFTeam.Home) {
             startPoint = start * 2.0 * 3.0 + 60.0
             currentPoint = start * 2.0 * 3.0 + 60.0
@@ -157,7 +156,6 @@ class FootballField : UIView {
         
         fillEndZones(context: context!)
         for drive in driveList {
-            print(drive)
             for item in drive {
                 let team: FFTeam = item.key
                 let plays: [Dictionary<String, CGFloat>] = item.value
