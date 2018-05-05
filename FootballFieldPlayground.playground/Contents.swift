@@ -48,6 +48,12 @@ class FootballField : UIView {
         backgroundColor = UIColor.init(red: 0, green: 153.0/255.0, blue: 41.0/255.0, alpha: 1.0)
     }
     
+    convenience init(homeTeamClr: UIColor, awayTeamClr: UIColor) {
+        self.init(frame: CGRect(x: 0, y: 0, width: 720, height: 300))
+        self.homeTeamColor = homeTeamClr
+        self.awayTeamColor = awayTeamClr
+    }
+    
     // Draws the white yard lines on the field
     private func drawYardLine(loc: CGFloat, context: CGContext) {
         context.beginPath()
@@ -173,7 +179,7 @@ class FootballField : UIView {
 
 // Example usage
 
-var field: FootballField = FootballField()
+var field: FootballField = FootballField(homeTeamClr: UIColor(red: (179.0/255.0), green: (163.0/255.0), blue: (105.0/255.0), alpha: 1.0), awayTeamClr: UIColor(white: (179.0/255.0), alpha: 1.0))
 // drive 1 by home
 field.startNewDrive(start: 25, team: FFTeam.Home)
 field.addNewPlay(yards: 20.0, team: FFTeam.Home)
@@ -196,7 +202,7 @@ field.addNewPlay(yards: 20, team: FFTeam.Home)
 field.startNewDrive(start: 20.0, team: FFTeam.Away)
 field.addNewPlay(yards: 10.0, team: FFTeam.Away)
 field.addNewPlay(yards: -2, team: FFTeam.Away)
-field.addNewPlay(yards: 20, team: FFTeam.Away)
+field.addNewPlay(yards: 20, team: FFTeam.Away) 
 
 // drive 5 by home
 field.startNewDrive(start: 50.0, team: FFTeam.Home)
