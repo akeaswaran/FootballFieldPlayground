@@ -202,7 +202,7 @@ field.addNewPlay(yards: 20, team: FFTeam.Home)
 field.startNewDrive(start: 20.0, team: FFTeam.Away)
 field.addNewPlay(yards: 10.0, team: FFTeam.Away)
 field.addNewPlay(yards: -2, team: FFTeam.Away)
-field.addNewPlay(yards: 20, team: FFTeam.Away) 
+field.addNewPlay(yards: 20, team: FFTeam.Away)
 
 // drive 5 by home
 field.startNewDrive(start: 50.0, team: FFTeam.Home)
